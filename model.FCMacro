@@ -1,0 +1,24 @@
+import FreeCAD, FreeCADGui
+import Part, PartGui
+import Import
+
+import os
+import tempfile
+
+
+import robodk
+import robolink
+from robodk.robomath import *
+
+model_name = FreeCADGui.ActiveDocument.Document.Name
+file_name = tempfile.gettempdir() + '\\' + model_name + '.stp'
+
+sel = FreeCADGui.Selection.getSelection()
+
+
+Import.export(sel,file_name)
+
+RDK = robolink.Robolink()
+RDK.AddFile(file_name)
+
+os.remove(file_name)

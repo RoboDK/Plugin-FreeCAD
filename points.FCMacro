@@ -1,0 +1,49 @@
+import FreeCAD, FreeCADGui
+import Part, PartGui
+import Import
+
+
+import robodk
+import robolink
+import robodk.robomath
+
+RDK = robolink.Robolink()
+
+sel = FreeCADGui.Selection.getSelectionEx()
+
+flip = -1 # 1
+
+faces = []
+points = []
+pts =[]
+
+i = 0 
+j = 0
+k = 0
+
+for obj in sel:
+	
+	elems = obj.SubObjects
+	
+	for elem in elems:
+		if len(elem.Vertexes) == 1 :
+			points.append(elem.Vertexes[0])
+		if len(elem.Faces) == 1 :
+			faces.append(elem.Faces[0])
+
+for pt in points:
+	
+    itm = (pt.Vertexes)[0].Point
+
+    if len(faces) > 0:
+        u, v = faces[0].Surface.parameter(itm)
+        normal = faces[0].Surface.normal(u,v)
+                
+        i = flip*normal.x
+        j = 	flip*normal.y
+        k = flip*normal.z
+		
+    pn = [itm[0], itm[1], itm[2], i, j, k]
+    pts.append(pn)
+
+RDK.AddPoints(pts)
